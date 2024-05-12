@@ -1,0 +1,18 @@
+{
+    "users": [
+        {
+            "user": "user",
+            "password": "password",
+            "id_rh": null,
+            "name": null,
+            "role_description": null,
+            "admission_date": null,
+            "born_date": null,
+            "token": null,
+            "token_update": null,
+            "token_expire": null,
+            "created": null,
+            "updated": null
+        }
+    ]
+}

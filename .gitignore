@@ -1,0 +1,4 @@
+user/
+.vscode/
+conf/*.json
+!conf/periods.json

@@ -1,0 +1,11 @@
+{
+    "servers": [
+        {
+            "server_name": "SERVER_NAME",
+            "server_propertie_url": "https://SERVER_URL/properties.json",
+            "app_url": null,
+            "created": null,
+            "updated": null
+        }
+    ]
+}
