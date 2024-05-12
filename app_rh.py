@@ -720,11 +720,8 @@ def get_data_for_loop():
     return usernames, servernames
 
 
-# Certifique-se de substituir 'SERVERS' e 'USERS' pelos caminhos corretos dos arquivos.
-
 usernames, servers = get_data_for_loop()
 
-# Exemplo de uso
 for server in servers:
     for username in usernames:
         Payments.process(username=username, servername=server)
