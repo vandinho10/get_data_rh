@@ -1,4 +1,5 @@
-user/
+__pycache__/
 .vscode/
 conf/*.json
 !conf/periods.json
+user/

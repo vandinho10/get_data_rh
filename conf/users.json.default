@@ -1,8 +1,8 @@
 {
     "users": [
         {
-            "user": "user",
-            "password": "password",
+            "user": "USUARIO",
+            "password": "SENHA",
             "id_rh": null,
             "name": null,
             "role_description": null,

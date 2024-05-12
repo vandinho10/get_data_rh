@@ -2,7 +2,7 @@
     "servers": [
         {
             "server_name": "SERVER_NAME",
-            "server_propertie_url": "https://SERVER_URL/properties.json",
+            "server_propertie_url": "https://SERVER_URL/ARQUIVO.json",
             "app_url": null,
             "created": null,
             "updated": null
