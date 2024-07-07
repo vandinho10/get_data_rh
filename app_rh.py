@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
-import os
 import inspect
 import json
-from typing import Optional
+import os
 import requests
 import urllib3
-from colorama import Fore, Style
 from bs4 import BeautifulSoup
-import requests
+from colorama import Fore, Style
 from datetime import datetime, timedelta
 
 # CONSTANTS
