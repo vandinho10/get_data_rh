@@ -980,6 +980,31 @@ class Timesheets:
         return user_data
 
     @staticmethod
+    def timesheets_outdated_periods(username: str) -> None:
+        """
+        Verifica se o arquivo de Periodos esta atualizado.
+        Está sendo considerado arquivo de Periodos desatualizado se com modificação superior a 10 dias.
+
+        Args:
+            username (str): O nome de usuário.
+        """
+        # Obtem o data de modificação do Arquivo
+        modification_time = os.path.getmtime(PERIODS)
+        modification_date = datetime.fromtimestamp(modification_time)
+
+        # Calcula a diferença entre a data atual e a data de modificação
+        current_date = datetime.now()
+        difference = current_date - modification_date
+
+        # Verifica se a diferença é maior que 10 dias
+        if difference.days > 10:
+            print(f"{CommonsRH.head_log()} Arquivo de Periodos está Desatualizados")
+            Timesheets.timesheet_periods_include(servername, username)
+            print(f"{CommonsRH.head_log()} Arquivo de Periodos foi Atualizado.")
+        else:
+            print(f"{CommonsRH.head_log()} Arquivo de Periodos está Atualizado.")
+
+    @staticmethod
     def main(servername: str, username: str) -> None:
         """
         Processa o relatório de folha de ponto para um determinado servidor e usuário.
@@ -988,6 +1013,7 @@ class Timesheets:
             servername (str): O nome do servidor.
             username (str): O nome de usuário.
         """
+        Timesheets.timesheets_outdated_periods(username)
         admission_date = SistemaLogin.get_user_info(username, "admission_date")
         data = FileManager.read_json(PERIODS)["periods"]
         for period in data:
@@ -1107,8 +1133,8 @@ def main():
     for servername in servers:
         for username in usernames:
             Payments.main(servername, username)
-            Timesheets.main(username=username, servername=servername)
-            UserProfile.main(username=username, servername=servername)
+            Timesheets.main(servername, username)
+            UserProfile.main(servername, username)
 
 
 if __name__ == "__main__":
