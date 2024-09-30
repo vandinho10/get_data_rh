@@ -1016,6 +1016,7 @@ class Timesheets:
         Está sendo considerado arquivo de Periodos desatualizado se com modificação superior a 10 dias.
 
         Args:
+            server_name (str): O nome do servidor.
             username (str): O nome de usuário.
         """
         # Obtem o data de modificação do Arquivo
