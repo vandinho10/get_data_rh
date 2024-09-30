@@ -980,7 +980,37 @@ class Timesheets:
         return user_data
 
     @staticmethod
-    def timesheets_outdated_periods(username: str) -> None:
+    def timesheet_hours_bank_extract(
+        servername: str, username: str, period_init: str, period_end: str
+    ):
+        """
+        Gera o relatório de folha de ponto para um determinado servidor, usuário e período.
+
+        Args:
+            server_name (str): O nome do servidor.
+            username (str): O nome de usuário.
+            period_init (str): A data de início do período.
+            period_end (str): A data de término do período.
+
+        Returns:
+            bytes: Os dados do relatório de folha de ponto em formato binário.
+        """
+        token = SistemaLogin.main(servername, username)
+        base_url = (
+            ServerData.get_server_info(servername, "app_url")
+            + "/timesheet/clockings/hoursExtract/%7Bcurrent%7D/?initPeriod="
+            + period_init
+            + "&endPeriod="
+            + period_end
+            + "&id="
+        )
+        hours_bank_extract = Requisitions.requisitions(
+            base_url, "get", headers=token, binary=True
+        )
+        return hours_bank_extract
+
+    @staticmethod
+    def timesheets_outdated_periods(servername: str, username: str) -> None:
         """
         Verifica se o arquivo de Periodos esta atualizado.
         Está sendo considerado arquivo de Periodos desatualizado se com modificação superior a 10 dias.
@@ -1013,7 +1043,7 @@ class Timesheets:
             servername (str): O nome do servidor.
             username (str): O nome de usuário.
         """
-        Timesheets.timesheets_outdated_periods(username)
+        Timesheets.timesheets_outdated_periods(servername, username)
         admission_date = SistemaLogin.get_user_info(username, "admission_date")
         data = FileManager.read_json(PERIODS)["periods"]
         for period in data:
@@ -1024,6 +1054,9 @@ class Timesheets:
                 period_ref = period["period_ref"]
                 period_init = period["period_init"]
                 period_end = period["period_end"]
+
+                ## Criar Processo para Monitorar o Arquivo.
+                file_name_hours_extract = f"{CommonsRH.user_dir(username)}/{period_ref[:4]}/{period_ref[5:]}_{CommonsRH.month_name(period_ref[5:])}_Hours_Extratct.pdf"
 
                 file_name = f"{CommonsRH.user_dir(username)}/{period_ref[:4]}/{period_ref[5:]}_{CommonsRH.month_name(period_ref[5:])}_Timesheet.pdf"
                 print(f"{CommonsRH.head_log()} {file_name}")
@@ -1065,6 +1098,13 @@ class Timesheets:
                                 servername, username, period_init, period_end
                             ),  # type: ignore
                         )
+                        FileManager.save_pdf(
+                            file_name_hours_extract,
+                            Timesheets.timesheet_hours_bank_extract(
+                                servername, username, period_init, period_end
+                            ),  # type: ignore
+                        )
+
                         timesheets_data.append(
                             {
                                 "user": username,
@@ -1079,6 +1119,12 @@ class Timesheets:
                     FileManager.save_pdf(
                         os.path.join(BASE_DIR, file_name),
                         Timesheets.timesheet_report(
+                            servername, username, period_init, period_end
+                        ),  # type: ignore
+                    )
+                    FileManager.save_pdf(
+                        file_name_hours_extract,
+                        Timesheets.timesheet_hours_bank_extract(
                             servername, username, period_init, period_end
                         ),  # type: ignore
                     )
@@ -1129,7 +1175,6 @@ def main():
     - Chama o método main da classe UserProfile para atualizar os dados do perfil do usuário no servidor.
     """
     usernames, servers = CommonsRH.get_data_for_loop()
-
     for servername in servers:
         for username in usernames:
             Payments.main(servername, username)
@@ -1139,3 +1184,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
